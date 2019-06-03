@@ -9,6 +9,7 @@ GAME RULES:
 
 */
 window.$ = document.querySelector.bind(document);
+window.$$ = document.getElementById.bind(document);
 
 
 var scores,
@@ -19,6 +20,8 @@ scores = [0,0];
 roundScore = 0;
 activePlayer = 0;
 
+newGame();
+
 
 $('.dice').style.display = 'none';
 
@@ -27,14 +30,14 @@ $('.btn-roll').addEventListener('click', function() {
     var dice = Math.floor(Math.random() * 6) + 1;
     
     if (dice === 1) {
-        $('.dice').src = 'dice-' + dice + ".png";
+        $('.dice').src = 'assets/pic/dice-' + dice + ".png";
         $('#current-' + activePlayer).textContent ='0';
         playerChange();
         // console.log("active player is: " + activePlayer);
     } else {
     // 2. display result
     $('.dice').style.display = 'block';
-    $('.dice').src = 'dice-' + dice + ".png";
+    $('.dice').src = 'assets/pic/dice-' + dice + ".png";
 
     //3. update the round score IF the roll is not a 1.
     roundScore = Number($('#current-' + activePlayer).textContent) + dice;
@@ -43,16 +46,19 @@ $('.btn-roll').addEventListener('click', function() {
 } )
 
 $('.btn-hold').addEventListener('click', function(){
-    $('#score-' + activePlayer).textContent = Number($('#score-' + activePlayer).textContent) + Number($('#current-' + activePlayer).textContent);
+    console.log('Active Player: ' + activePlayer, 'Score: ' + scores[activePlayer], 'Round Score: ' + roundScore);
+    scores[activePlayer] += roundScore;
+    $$('score-' + activePlayer).textContent = scores[activePlayer];
+    // $('#score-' + activePlayer).textContent = Number($('#score-' + activePlayer).textContent) + Number($('#current-' + activePlayer).textContent);
     $('#current-' + activePlayer).textContent = '0';
     console.log($('#score-' + activePlayer));
-    playerChange(); 
+    checkWinner(); 
     // console.log("active player: " + activePlayer);
 })
 
 
 function playerChange() {
-    $('.player-'+activePlayer+'-panel').classList.toggle('active');
+    $('.player-' + activePlayer + '-panel').classList.toggle('active');
     activePlayer ? activePlayer = 0 : activePlayer = 1;
     roundScore = 0;
     $('.player-'+activePlayer+'-panel').classList.toggle('active');
@@ -60,12 +66,32 @@ function playerChange() {
 }
 
 $('.btn-new').addEventListener('click', function(){
-    $('#score-0').textContent = '0';
-    $('#score-1').textContent = '0';
-    $('#current-0').textContent = '0';
-    $('#current-1').textContent = '0';
-    $('.dice').style.display = 'none';
-    activePlayer = 0;
-    roundScore = 0;
+    newGame();
 })
 
+function newGame() {
+    $('.dice').style.display = 'none';
+    $$('score-0').textContent = '0';
+    $$('score-1').textContent = '0';
+    $$('current-0').textContent = '0';
+    $$('current-1').textContent = '0';
+    $$('name-0').textContent = 'PLAYER 1';
+    $('.player-0-panel').classList.add('active');
+    $('.player-1-panel').classList.remove('active');
+    $$('name-1').textContent = 'PLAYER 2';
+    $('.btn-roll').style.display = 'block';
+    $('.btn-hold').style.display = 'block';
+    scores = [0,0];
+    activePlayer = 0;
+    roundScore = 0;
+}
+
+function checkWinner() {
+    if (scores[activePlayer] >= 100) {
+        $$('name-' + activePlayer).textContent = "WINNER";
+        $('.btn-roll').style.display = 'none';
+        $('.btn-hold').style.display = 'none';
+    } else {
+        playerChange();
+    }
+}
