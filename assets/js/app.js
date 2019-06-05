@@ -87,7 +87,7 @@ function init() {
 }
 
 function checkWinner() {
-    if (scores[activePlayer] >= 10) {
+    if (scores[activePlayer] >= 100) {
         $$('name-' + activePlayer).textContent = 'WINNER';
         $('.player-' + activePlayer + '-panel').classList.toggle('winner');
         $('.player-' + activePlayer + '-panel').classList.toggle('active');
