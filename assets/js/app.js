@@ -16,14 +16,14 @@ var scores,
     roundScore,
     activePlayer;
 
-scores = [0,0];
-roundScore = 0;
-activePlayer = 0;
+// scores = [0,0];
+// roundScore = 0;
+// activePlayer = 0;
 
-newGame();
+init();
 
 
-$('.dice').style.display = 'none';
+// $('.dice').style.display = 'none';
 
 $('.btn-roll').addEventListener('click', function() {
     // 1. gen a random number
@@ -36,7 +36,7 @@ $('.btn-roll').addEventListener('click', function() {
         // console.log("active player is: " + activePlayer);
     } else {
     // 2. display result
-    $('.dice').style.display = 'block';
+    $('.dice').classList.remove('gameOver');
     $('.dice').src = 'assets/pic/dice-' + dice + ".png";
 
     //3. update the round score IF the roll is not a 1.
@@ -46,14 +46,11 @@ $('.btn-roll').addEventListener('click', function() {
 } )
 
 $('.btn-hold').addEventListener('click', function(){
-    console.log('Active Player: ' + activePlayer, 'Score: ' + scores[activePlayer], 'Round Score: ' + roundScore);
-    scores[activePlayer] += roundScore;
+    $('.dice').classList.add('gameOver');
+       scores[activePlayer] += roundScore;
     $$('score-' + activePlayer).textContent = scores[activePlayer];
-    // $('#score-' + activePlayer).textContent = Number($('#score-' + activePlayer).textContent) + Number($('#current-' + activePlayer).textContent);
     $('#current-' + activePlayer).textContent = '0';
-    console.log($('#score-' + activePlayer));
     checkWinner(); 
-    // console.log("active player: " + activePlayer);
 })
 
 
@@ -66,32 +63,38 @@ function playerChange() {
 }
 
 $('.btn-new').addEventListener('click', function(){
-    newGame();
+    init();
 })
 
-function newGame() {
-    $('.dice').style.display = 'none';
+function init() {
+    $('.dice').classList.add('gameOver');
     $$('score-0').textContent = '0';
     $$('score-1').textContent = '0';
     $$('current-0').textContent = '0';
     $$('current-1').textContent = '0';
     $$('name-0').textContent = 'PLAYER 1';
-    $('.player-0-panel').classList.add('active');
-    $('.player-1-panel').classList.remove('active');
     $$('name-1').textContent = 'PLAYER 2';
-    $('.btn-roll').style.display = 'block';
-    $('.btn-hold').style.display = 'block';
+    $('.player-0-panel').classList.remove('active');
+    $('.player-1-panel').classList.remove('active');
+    $('.player-0-panel').classList.remove('winner');
+    $('.player-1-panel').classList.remove('winner');
+    $('.player-0-panel').classList.add('active');
+    $('.btn-roll').classList.remove('gameOver');
+    $('.btn-hold').classList.remove('gameOver');
     scores = [0,0];
     activePlayer = 0;
     roundScore = 0;
 }
 
 function checkWinner() {
-    if (scores[activePlayer] >= 100) {
-        $$('name-' + activePlayer).textContent = "WINNER";
-        $('.btn-roll').style.display = 'none';
-        $('.btn-hold').style.display = 'none';
+    if (scores[activePlayer] >= 10) {
+        $$('name-' + activePlayer).textContent = 'WINNER';
+        $('.player-' + activePlayer + '-panel').classList.toggle('winner');
+        $('.player-' + activePlayer + '-panel').classList.toggle('active');
+        $('.btn-roll').classList.add('gameOver');
+        $('.btn-hold').classList.add('gameOver');
     } else {
         playerChange();
     }
 }
+
